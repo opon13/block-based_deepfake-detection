@@ -13,24 +13,30 @@ For more information, here the link to the paper:
 ## Dataset
 The dataset comprises a total of $72,334$ images, distributed as shown in the Table. The image sizes vary considerably, ranging from 216x216 pixels up to 1024x1024 pixels, thus offering a wide spectrum of resolutions for analysis. For each generative architecture, special attention was paid to the internal balancing of the corresponding subset of images. This balancing was pursued in terms of both semantic content and size in order to minimise potential bias and ensure a fair representation of the different types of visual input. All images are in PNG format.
 
-| Type | Architecture    | # Images | Total  | Different Sizes                      |
-|------|-----------------|----------|--------|--------------------------------------|
-| GAN  | AttGAN      | 6005     |        | 256 × 256                            |
-|      | BigGAN       | 2600     |        | 256 × 256                            |
-|      | CycleGAN   | 1047     |        | 256 × 256; 512 × 512                 |
-|      | GanGAN     | 4000     |        | 256 × 256; 512 × 512                 |
-|      | GDWCT        | 3367     | 37,572 | 216 × 216                            |
-|      | ProGAN      | 1000     |        | 256 × 256; 512 × 512                 |
-|      | StarGAN     | 6848     |        | 256 × 256                            |
-|      | StyleGAN    | 4705     |        | 256 × 256; 512 × 512                 |
-|      | StyleGAN2   | 7000     |        | 256 × 256; 512 × 512; 1024 × 1024    |
-|      | StyleGAN3   | 1000     |        | 256 × 256; 512 × 512; 1024 × 1024    |
-| DM   | DALL-E 2    | 3423     |        | 512 × 512; 1024 × 1024               |
-|      | DALL-E MINI     | 1000     |        | 256 × 256                            |
-|      | Glide       | 2000     | 15,423 | 256 × 256                            |
-|      | Latent Diffusion | 4000 |      | 256 × 256; 512 × 512                 |
-|      | Stable Diffusion | 5000    |        | 256 × 256; 512 × 512                 |
-| REAL | -               | 19341    | 19,341 | 256 × 256; 512 × 512; 1024 × 1024    |
+| Nature | Architecture   | Type | # Images | Total  | Different Sizes                               |
+|--------|----------------|------|----------|--------|-----------------------------------------------|
+| **GAN**| AttGAN     | FO   | 6005     |        | 256 × 256                                     |
+|        | BigGAN      | O    | 2600     |        | 256 × 256                                     |
+|        | CycleGAN   | FO   | 1047     |        | 256 × 256; 512 × 512                          |
+|        | GauGAN     | O    | 4000     |        | 256 × 256; 512 × 512                          |
+|        | GDWCT       | O    | 3367     | 37.572 | 216 × 216                                     |
+|        | ProGAN     | O    | 1000     |        | 256 × 256; 512 × 512                          |
+|        | StarGAN     | F    | 6848     |        | 256 × 256                                     |
+|        | StyleGAN   | O    | 4705     |        | 256 × 256; 512 × 512                          |
+|        | StyleGAN2  | FO   | 7000     |        | 256 × 256; 512 × 512; 1024 × 1024             |
+|        | StyleGAN3  | F    | 1000     |        | 256 × 256; 512 × 512; 1024 × 1024             |
+| **DM** | DALL-E 2   | FO   | 3421     |        | 512 × 512; 1024 × 1024                        |
+|        | DALL-E MINI    | O    | 1000     |        | 256 × 256                                     |
+|        | Glide     | O    | 2000     | 15.421 | 256 × 256; 512 × 512                          |
+|        | Latent Diffusion  | FO | 4000 |      | 256 × 256; 512 × 512                          |
+|        | Stable Diffusion      | FO | 5000 |      | 256 × 256; 512 × 512                          |
+
+| Nature | Sources   | Type | # Images | Total  | Different Sizes                               |
+|--------|----------------|------|----------|--------|-----------------------------------------------|
+| **REAL** | CelebA   | F    | 5135     |        | 178 × 218                                     |
+|          | FFHQ     | F    | 4981     | 19341  | 1024 × 1024                                   |
+|          | Others    | O | 9225 |        | 256 × 256; 512 × 512; 1024 × 1024             |
+
 
 The dataset is available at the following link: [link]() [DATASET AVAILABLE AS SOON AS THE PAPER IS PUBLISHED]
 
