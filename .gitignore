@@ -1,0 +1,7 @@
+wandb/
+*.out
+*.sh
+guidance.csv
+__pycache__/
+wd.py
+*-info
