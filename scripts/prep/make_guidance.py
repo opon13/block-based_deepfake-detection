@@ -1,12 +1,25 @@
 import os, random, csv
+import argparse
+
 from dfx import get_path
 
 
-def main():
+def get_parser():
+    parser = argparse.ArgumentParser()
 
-    datasets_path = get_path('dataset')
-    guidance_path = get_path('guidance')
-    models_dir = get_path('models')
+    parser.add_argument('-data_dir', '--datasets_dir', type=str, default=None)
+    parser.add_argument('-guide_dir', '--guidance_dir', type=str, default=None)
+    parser.add_argument('-save_dir', '--saving_dir', type=str, default=None)
+
+    args = parser.parse_args()
+    return args
+
+
+def main(parser):
+
+    datasets_path = get_path('dataset') if parser.datasets_dir is not None else parser.datasets_dir
+    guidance_path = get_path('guidance') if parser.guidance_dir is not None else parser.guidance_dir
+    models_dir = get_path('models') if parser.saving_dir is not None else parser.saving_dir
 
     for folder in ['bm-dm', 'bm-gan', 'bm-real', 'complete']:
         folder_dir = os.path.join(models_dir, folder)
@@ -35,6 +48,8 @@ def main():
         writer.writerow(['label', 'image_path', 'model']) 
         writer.writerows(data)
 
+
 if __name__=='__main__':
+    parser = get_parser()
     print('writing new guidance.csv...')
-    main()
+    main(parser)

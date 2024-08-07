@@ -8,27 +8,31 @@ import torch
 import torchvision.transforms as T
 from torch.utils.data import Dataset, Subset, SubsetRandomSampler
 
-# %%
 class mydataset(Dataset):
-  def __init__(self, dset_dir, guidance, for_overfitting=True, for_testing=False, transforms=T.Compose([])):
+  def __init__(self, dset_dir, guidance=None, for_overfitting=True, for_testing=False, transforms=T.Compose([])):
     self.dset_dir = Path(dset_dir)
     self.transforms = transforms
     self.files = []
-    labels = pd.read_csv(guidance)
+    if guidance is not None:
+      labels = pd.read_csv(guidance)
+    else:
+      labels = None    
     models = sorted(os.listdir(self.dset_dir))
-    n=0 if for_overfitting else 1
-    if for_testing: n=2
+    n = 0 if for_overfitting else 1
+    if for_testing: n = 2
     for model_name in models:
-      class_idx = models.index(model_name) # model class
+      class_idx = models.index(model_name)  # model class
       model_path = os.path.join(self.dset_dir, model_name)
       architectures = sorted(os.listdir(model_path))
       for architecture_name in architectures:
-        class_idx2 = architectures.index(architecture_name) # architecture class
-        architecture_path = os.path.join(model_path, architecture_name)         
+        class_idx2 = architectures.index(architecture_name)  # architecture class
+        architecture_path = os.path.join(model_path, architecture_name)
         for image in os.listdir(architecture_path):
           image_path = os.path.join(architecture_path, image)
           image_dir = image_path.split('datasets')[1]
-          if np.array(labels[labels['image_path']==image_dir])[0,0]==n:
+          if guidance is not None and np.array(labels[labels['image_path'] == image_dir])[0, 0] == n:
+            self.files += [{"file": image_path, "class_mod": class_idx, "class_arch": class_idx2}]
+          elif guidance is None:
             self.files += [{"file": image_path, "class_mod": class_idx, "class_arch": class_idx2}]
           else:
             continue
@@ -42,6 +46,7 @@ class mydataset(Dataset):
     img = Image.open(file).convert("RGB")
     img = self.transforms(img)
     return img, class_mod, class_arch
+  
   
 class dataset_for_robustness(Dataset):
   def __init__(self, dset_dir, transforms=T.Compose([])):
@@ -93,43 +98,49 @@ class dataset_for_generaization(Dataset):
     img = self.transforms(img)
     return img, class_mod, 1
 
+
 class umbalanced_dataset(Dataset):
-  def __init__(self, dset_dir, main_class, guidance, perc_to_take=0.1, for_overfitting=True, for_testing=False, transforms=T.Compose([])):
+  def __init__(self, dset_dir, main_class, guidance=None, perc_to_take=0.1, for_overfitting=True, for_testing=False, transforms=T.Compose([])):
     self.dset_dir = Path(dset_dir)
     self.transforms = transforms
     self.files = []
-    labels = pd.read_csv(guidance)
+    if guidance is not None:
+      labels = pd.read_csv(guidance)
+    else:
+      labels = None 
     models = sorted(os.listdir(self.dset_dir))
-    n=0 if for_overfitting==True else 1
-    if for_testing==True: n=2
+    n = 0 if for_overfitting else 1
+    if for_testing: n = 2
     for model_name in models:
-      class_idx = models.index(model_name) # model class
+      class_idx = models.index(model_name)
       assert main_class in models
-      if model_name==main_class:
-        class_idx=1
+      if model_name == main_class:
+        class_idx = 1
       else:
-        class_idx=0
+        class_idx = 0
       model_path = os.path.join(self.dset_dir, model_name)
       architectures = sorted(os.listdir(model_path))
       for architecture_name in architectures:
-        class_idx2 = architectures.index(architecture_name) # architecture class
-        architecture_path = os.path.join(model_path, architecture_name) 
-        if model_name==main_class:
+        class_idx2 = architectures.index(architecture_name)  # architecture class
+        architecture_path = os.path.join(model_path, architecture_name)
+        if model_name == main_class:
           for image in os.listdir(architecture_path):
-            image_path = os.path.join(architecture_path, image)
-            if np.array(labels[labels['image_path']==image_path])[0,0]==n:
-              self.files += [{"file": image_path, "class_mod": class_idx, "class_arch": class_idx2}]
+            image_path = os.path.join(architecture_path, image)            
+            if guidance is not None:
+              if np.array(labels[labels['image_path'] == image_path])[0, 0] == n:
+                self.files += [{"file": image_path, "class_mod": class_idx, "class_arch": class_idx2}]
             else:
-              continue
+              self.files += [{"file": image_path, "class_mod": class_idx, "class_arch": class_idx2}]
         else:
           images = os.listdir(architecture_path)
-          subset=random.sample(images, k=int(len(images)*perc_to_take))
+          subset = random.sample(images, k=int(len(images) * perc_to_take))
           for image in subset:
             image_path = os.path.join(architecture_path, image)
-            if np.array(labels[labels['image_path']==image_path])[0,0]==n:
-              self.files += [{"file": image_path, "class_mod": class_idx, "class_arch": class_idx2}]
+            if guidance is not None:
+              if np.array(labels[labels['image_path'] == image_path])[0, 0] == n:
+                self.files += [{"file": image_path, "class_mod": class_idx, "class_arch": class_idx2}]
             else:
-              continue                 
+              self.files += [{"file": image_path, "class_mod": class_idx, "class_arch": class_idx2}]
   def __len__(self):
     return len(self.files)
   def __getitem__(self, i):
@@ -140,6 +151,7 @@ class umbalanced_dataset(Dataset):
     img = Image.open(file).convert("RGB")
     img = self.transforms(img)
     return img, class_mod, class_arch
+
 
 def check_len(dset, binary:bool=False, return_perc=False):
   print(f'\nlength dataset: {len(dset)}')

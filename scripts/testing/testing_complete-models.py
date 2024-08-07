@@ -23,7 +23,12 @@ def get_parser():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--backbone', type=str)
-    parser.add_argument('--backbone_path', type=str, default=None)
+    parser.add_argument('--model_path', type=str, default=None)
+    parser.add_argument('--datasets_dir', type=str, default=None)
+    parser.add_argument('--guidance_dir', type=str, default=None)
+    parser.add_argument('--saving_dir', type=str, default=None)
+    parser.add_argument('--robustness_dir', type=str, default=None)
+    
     parser.add_argument('--classification_type', type=str, default='multi-class', choices=['binary', 'multi-class'])
     parser.add_argument('--plot_cm', type=bool, default=False)
     parser.add_argument('--save_cm', type=bool, default=False)
@@ -39,14 +44,14 @@ def get_parser():
 
 def main(parser):
 
-    datasets_path = get_path('dataset')
-    guidance_path = get_path('guidance')
-    models_dir = get_path('models')
-    robustnessdset_path = get_path('data_robustness')
+    datasets_path = get_path('dataset') if parser.datasets_dir is not None else parser.datasets_dir
+    guidance_path = get_path('guidance') if parser.guidance_dir is not None else parser.guidance_dir
+    models_dir = get_path('models') if parser.saving_dir is not None else parser.saving_dir
+    robustnessdset_path = get_path('data_robustness') if parser.robustness_dir is not None else parser.robustness_dir
 
     complete_model = get_complete_model(parser.backbone, models_dir=models_dir)
-    if not parser.backbone_path==None:
-        complete_model.load_state_dict(torch.load(parser.backbone_path))
+    if not parser.model_path==None:
+        complete_model.load_state_dict(torch.load(parser.model_path))
     else:
         saved_backbone_name = call_saved_model(backbone_name=parser.backbone)
         complete_model.load_state_dict(torch.load(models_dir+'/complete/'+saved_backbone_name+'.pt'))

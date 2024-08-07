@@ -22,9 +22,13 @@ from dfx import training
 def get_parser():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-b', '--backbone', type=str)
     parser.add_argument('-logs', '--mode_logs', type=str, default='online')
     parser.add_argument('-main', '--main_class', type=str, choices=['dm_generated','gan_generated','real'])
+    parser.add_argument('-data_dir', '--datasets_dir', type=str, default=None)
+    parser.add_argument('-guide_dir', '--guidance_dir', type=str, default=None)
+    parser.add_argument('-save_dir', '--saving_dir', type=str, default=None)
+
+    parser.add_argument('-b', '--backbone', type=str)
     parser.add_argument('-batch', '--batch_size', type=int, default=32)
     parser.add_argument('-lr', '--learning_rate', type=float, default=1e-4)
     parser.add_argument('-wd', '--weight_decay', type=float, default=1e-3)
@@ -39,9 +43,9 @@ def get_parser():
 
 def main(parser):
 
-    datasets_path = get_path('dataset')
-    guidance_path = get_path('guidance')
-    models_dir = get_path('models')
+    datasets_path = get_path('dataset') if parser.datasets_dir is not None else parser.datasets_dir
+    guidance_path = get_path('guidance') if parser.guidance_dir is not None else parser.guidance_dir
+    models_dir = get_path('models') if parser.saving_dir is not None else parser.saving_dir
 
     batch_size = parser.batch_size
 

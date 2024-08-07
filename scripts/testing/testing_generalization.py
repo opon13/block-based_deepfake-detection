@@ -23,9 +23,12 @@ def get_parser():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--backbone', type=str)
+    parser.add_argument('--model_path', type=str, default=None)
+    parser.add_argument('--saving_dir', type=str, default=None)
+    parser.add_argument('--generalization_dir', type=str, default=None)
+
     parser.add_argument('--model_type', type=str, default='complete', choices=['complete', 'backbone'])
     parser.add_argument('--tests', type=str, action='append', default=['inner_gan', 'outer_gan', 'io_gan', 'inner_dm', 'outer_dm', 'io_dm', 'inner_all', 'outer_all', 'all'])
-    parser.add_argument('--backbone_path', type=str, default=None)
     parser.add_argument('--plot_cm', type=bool, default=False)
     parser.add_argument('--save_cm', type=bool, default=False)
     parser.add_argument('--average', type=str, default='binary', choices=['binary', 'micro', 'macro'])
@@ -36,12 +39,13 @@ def get_parser():
 
 
 def main(parser):
-    models_dir = get_path('models')
-    generalization_path = get_path('data_generalization')
+
+    models_dir = get_path('models') if parser.saving_dir is not None else parser.saving_dir
+    generalization_path = get_path('data_generalization') if parser.generalization_dir is not None else parser.generalization_dir
 
     complete_model = get_complete_model(parser.backbone, models_dir=models_dir) if parser.model_type=='complete' else backbone(parser.backbone, finetuning=True, num_classes=3)
-    if not parser.backbone_path==None:
-        complete_model.load_state_dict(torch.load(parser.backbone_path))
+    if not parser.model_path==None:
+        complete_model.load_state_dict(torch.load(parser.model_path))
     else:
         saved_backbone_name = call_saved_model(backbone_name=parser.backbone)
         complete_model.load_state_dict(torch.load(models_dir+'/complete_models/'+saved_backbone_name+'.pt'))
