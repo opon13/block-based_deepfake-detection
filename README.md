@@ -10,6 +10,84 @@ For more information, here the link to the paper:
 - Arxiv: [link](https://arxiv.org/abs/2404.15697)
 - 
 
+## Project Structure
+This section outlines the recommended folder structure for the project. The working directory is where all the images for training and testing the models, as well as the model weights, are stored. 
+The project is organized as follows:
+```
+working_dir/
+├── datasets/                        # Training and testing datasets
+├── testing_robustness/              # Data for testing model robustness
+├── testing_generalization/          # Data for testing model generalization
+├── guidance.csv                     # CSV file for data processing guidance
+└── models/                          # Models and related files for the unbalancing approach
+```
+This structure is recommended but not mandatory. You can specify alternative paths as needed.
+To use the suggested structure:
+
+  1. Create a file named `wd.py` inside `src/dfx/`
+  2. Add the following line to `wd.py`:
+  ```{python}
+  working_dir = '<your_working_directory_path>'
+  ```
+  3. Replace `<your_working_directory_path>` with your actual working directory path.
+
+## Installation
+  1. Clone the repository:
+     ```{bash}
+     git clone git@github.com:opontorno/block-based_deepfake-detection.git
+     cd <repository_name>
+     ```
+  2. Install the `dfx` package and dependencies:
+     ```{bash}
+     pip install -e .
+     pip install -r requirements.txt
+     ```
+
+
+## Train the models
+### Data preparation
+  1. Organize your data following this structure:
+  ```
+    Datasets/
+    ├── gan_generated/
+    │   ├── AttGAN/
+    │   ├── BigGAN/
+    │   ├── CycleGAN/
+    │   ├── GauGAN/
+    │   └── .../
+    ├── dm_generated/
+    │   ├── DALL-E 2/
+    │   ├── DALL-E MINI/
+    │   ├── Glide/
+    │   ├── Latent Diffusion/
+    │   └── .../
+    └── real/
+        └── real/
+  ```
+  2. Create a guidance CSV file:
+  ```{bash}
+  python scripts/prep/make_guidance.csv --datasets_dir <your_data_dir> --saving_dir <your_save_path> --guidance_dir <your_guidance_path>
+  ```
+
+### Train Base Models
+Train the three base models:
+```{python}
+python scripts/training/training_base-model.py --datasets_dir <your_data_dir> --main_class <main> --saving_path <your_save_path>
+```
+Replace `<main>` with one of: 'dm_generated', 'gan_generated', or 'real'.
+
+### Train Complete Model
+Train the complete model:
+```
+python scripts/training/training_complete-model.py --datasets_dir <your_data_dir> --main_class <main> --saving_path <your_save_path>
+```
+
+## Inference
+Test the complete model specifying the `backbone` type and, if any, the `model_path`:
+```{python}
+python scripts/testing/testing_complete-models.py --backbone <backbone_type> --model_path <your_model_path> --test_raw True --datasets_dir <your_data_dir> --main_class <main> --saving_path <your_save_path>
+```
+
 ## Dataset
 The dataset comprises a total of $72,334$ images, distributed as shown in the Table. The image sizes vary considerably, ranging from 216x216 pixels up to 1024x1024 pixels, thus offering a wide spectrum of resolutions for analysis. For each generative architecture, special attention was paid to the internal balancing of the corresponding subset of images. This balancing was pursued in terms of both semantic content and size in order to minimise potential bias and ensure a fair representation of the different types of visual input. All images are in PNG format.
 
