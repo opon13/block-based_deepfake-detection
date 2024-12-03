@@ -7,8 +7,8 @@ by an architecture not seen during training. This usually leads to a drop in per
 <img src="media/newarchitecture.png" alt="Alt text" width="700">
 
 For more information, here the link to the paper:
+- Springer: [link](https://link.springer.com/chapter/10.1007/978-3-031-78305-0_12)
 - Arxiv: [link](https://arxiv.org/abs/2404.15697)
-- 
 
 ## Project Structure
 This section outlines the recommended folder structure for the project. The working directory is where all the images for training and testing the models, as well as the model weights, are stored. 
