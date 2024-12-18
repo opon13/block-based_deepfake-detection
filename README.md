@@ -120,10 +120,12 @@ The dataset is available at the following link: [link]() [DATASET AVAILABLE AS S
 
 ## Citation
 ```
-@article{pontorno2024deepfeaturex,
+@inproceedings{pontorno2025deepfeaturex,
   title={DeepFeatureX Net: Deep Features eXtractors based Network for discriminating synthetic from real images},
   author={Pontorno, Orazio and Guarnera, Luca and Battiato, Sebastiano},
-  journal={arXiv preprint arXiv:2404.15697},
-  year={2024}
+  booktitle={International Conference on Pattern Recognition},
+  pages={177--193},
+  year={2025},
+  organization={Springer}
 }
 ```
